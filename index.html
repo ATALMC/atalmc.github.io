@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="night">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATALMC — Adem Tolunay Anadolu Lisesi Minecraft Sunucusu</title>
+<meta name="description" content="Okulumuzun Minecraft sunucusu. Java ve Bedrock destekli, 1.13'ten 26.2'ye kadar tüm sürümler. Adres: 84.51.35.247">
+<meta name="theme-color" content="#12161a">
+<meta property="og:title" content="ATALMC — Okulun Minecraft sunucusu">
+<meta property="og:description" content="Adres 84.51.35.247 · Java ve Bedrock · 1.13 – 26.2 arası tüm sürümler">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'><rect%20width='16'%20height='16'%20fill='%237a5433'/><rect%20width='16'%20height='5'%20fill='%235aa832'/><rect%20y='5'%20width='16'%20height='1'%20fill='%237fd44e'%20opacity='.5'/><rect%20x='3'%20y='8'%20width='2'%20height='2'%20fill='%235f3f24'/><rect%20x='9'%20y='11'%20width='2'%20height='2'%20fill='%235f3f24'/><rect%20x='11'%20y='7'%20width='2'%20height='1'%20fill='%235f3f24'/></svg>">
+<script>
+(function(){try{var s=localStorage.getItem("atalmc-theme");
+if(!s)s=window.matchMedia("(prefers-color-scheme: light)").matches?"day":"night";
+document.documentElement.setAttribute("data-theme",s);}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ tokens ============ */
+:root{
+  --display:"Bungee",Impact,"Arial Black",system-ui,sans-serif;
+  --body:"Archivo","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --maxw:1080px;
+  --torch-dark:#9c6206;
+}
+:root[data-theme="night"]{
+  --bg:#12161a; --panel:#1b2126; --panel-2:#242c33; --slot:#0f1317;
+  --edge-hi:#39434b; --edge-lo:#080b0d; --line:#2b343b;
+  --ink:#eceae4; --ink-dim:#a3aab1; --ink-faint:#78838c;
+  --torch:#ffb43c; --torch-t:#ffb43c; --grass:#7ac74f; --oak:#c08a4a; --redstone:#e05a4e;
+  --tshadow:rgba(0,0,0,.62); --glow:0 0 44px -8px rgba(255,180,60,.22);
+  --sky-1:#090e15; --sky-2:#151d26;
+  --hill-back:#0f161d; --hill-front:#1c262e; --hill-cap:#2f5230; --cloud:rgba(255,255,255,.045);
+  --tree-leaf:#22381f; --tree-trunk:#2c2117;
+  --star:#dfe9f5; --star-op:1;
+  --orb:#e9eef6; --orb-glow:rgba(190,215,255,.18);
+}
+:root[data-theme="day"]{
+  --bg:#e7edf0; --panel:#ffffff; --panel-2:#eef3f5; --slot:#e0e8ec;
+  --edge-hi:#ffffff; --edge-lo:#aab7c0; --line:#c6d1d8;
+  --ink:#12181d; --ink-dim:#4c565f; --ink-faint:#6f7c85;
+  --torch:#f0a01e; --torch-t:#8a5200; --grass:#3f8f2a; --oak:#8a5a24; --redstone:#c0392b;
+  --tshadow:rgba(20,30,40,.16); --glow:0 0 0 rgba(0,0,0,0);
+  --sky-1:#b9d8ee; --sky-2:#e8f1f6;
+  --hill-back:#9dbfc9; --hill-front:#8cba82; --hill-cap:#6cb046; --cloud:rgba(255,255,255,.9);
+  --tree-leaf:#4c8a3c; --tree-trunk:#7a5330;
+  --star:#ffffff; --star-op:0;
+  --orb:#ffe27a; --orb-glow:rgba(255,205,90,.35);
+}
+
+/* ============ base ============ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--body);font-size:1.0625rem;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(45deg,rgba(127,127,127,.045) 25%,transparent 25%,transparent 75%,rgba(127,127,127,.045) 75%),
+                   linear-gradient(45deg,rgba(127,127,127,.045) 25%,transparent 25%,transparent 75%,rgba(127,127,127,.045) 75%);
+  background-size:8px 8px;background-position:0 0,4px 4px;
+}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1rem,4vw,2rem)}
+a{color:var(--torch-t);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.005em}
+:focus-visible{outline:3px solid var(--torch);outline-offset:3px}
+.px{display:block;width:16px;height:16px;shape-rendering:crispEdges;image-rendering:pixelated}
+.skip{position:absolute;left:-9999px;top:0;background:var(--panel);padding:.6rem 1rem;z-index:99}
+.skip:focus{left:.5rem;top:.5rem}
+
+/* bevel yüzeyler */
+.raised{background:var(--panel);border:2px solid var(--edge-lo);
+  box-shadow:inset 2px 2px 0 var(--edge-hi),inset -2px -2px 0 rgba(0,0,0,.22)}
+.sunken{background:var(--slot);
+  box-shadow:inset 2px 2px 0 var(--edge-lo),inset -2px -2px 0 var(--edge-hi)}
+
+/* butonlar */
+.btn{font-family:var(--body);font-weight:700;font-size:.9rem;color:var(--ink);
+  background:var(--panel-2);border:2px solid var(--edge-lo);padding:.6rem 1.05rem;cursor:pointer;
+  box-shadow:inset 2px 2px 0 var(--edge-hi),inset -2px -2px 0 rgba(0,0,0,.22),0 3px 0 var(--edge-lo);
+  transition:transform .06s linear}
+.btn:hover{background:var(--panel)}
+.btn:active{transform:translateY(3px);
+  box-shadow:inset 2px 2px 0 var(--edge-hi),inset -2px -2px 0 rgba(0,0,0,.22)}
+.btn-torch{background:var(--torch);color:#1c1305;border-color:var(--torch-dark);
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.5),inset -2px -2px 0 rgba(0,0,0,.22),0 3px 0 var(--torch-dark)}
+.btn-torch:hover{background:var(--torch);filter:brightness(1.06)}
+.btn-torch:active{box-shadow:inset 2px 2px 0 rgba(255,255,255,.5),inset -2px -2px 0 rgba(0,0,0,.22)}
+.btn-torch.ok{background:var(--grass);border-color:#3d7a25;box-shadow:inset 2px 2px 0 rgba(255,255,255,.45),inset -2px -2px 0 rgba(0,0,0,.22),0 3px 0 #3d7a25}
+
+/* ============ topbar ============ */
+.top{position:sticky;top:0;z-index:60;background:var(--bg);border-bottom:2px solid var(--edge-lo)}
+.top .wrap{display:flex;align-items:center;gap:.75rem;height:62px}
+.logo{display:flex;align-items:center;gap:.55rem;font-family:var(--display);font-size:1.05rem;
+  color:var(--ink);text-decoration:none;letter-spacing:.02em}
+.logo .px{width:24px;height:24px}
+.nav{margin-left:auto;display:flex;align-items:center;gap:.15rem}
+.nav a{color:var(--ink-dim);text-decoration:none;font-size:.875rem;font-weight:600;padding:.45rem .65rem}
+.nav a:hover{color:var(--ink);background:var(--panel-2)}
+@media(max-width:800px){.nav a.opt{display:none}}
+.themebtn{margin-left:.4rem;width:40px;height:36px;display:grid;place-items:center;padding:0}
+.themebtn .px{width:18px;height:18px}
+.moon,.sun{display:block}
+:root[data-theme="night"] .sun{display:none}
+:root[data-theme="day"] .moon{display:none}
+
+/* ============ hero ============ */
+.hero{position:relative;overflow:hidden;border-bottom:2px solid var(--edge-lo);
+  background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 100%)}
+.stars{position:absolute;top:0;left:0;width:100%;height:65%;opacity:var(--star-op);transition:opacity .35s}
+.clouds{position:absolute;top:12%;left:0;width:100%;height:clamp(46px,8vw,74px)}
+.orb{position:absolute;top:clamp(1.2rem,5vw,3rem);right:clamp(1.2rem,7vw,5rem);
+  width:40px;height:40px;background:var(--orb);box-shadow:0 0 0 8px var(--orb-glow),0 0 70px 24px var(--orb-glow)}
+.horizon{position:absolute;left:0;bottom:0;width:100%;height:clamp(110px,20vw,208px)}
+.hero .wrap{position:relative;z-index:2;
+  padding-block:clamp(2.5rem,7vw,4.25rem) clamp(10rem,26vw,16rem)}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;color:var(--torch-t);
+  display:flex;align-items:center;gap:.5rem;margin:0 0 1rem;font-weight:700}
+.eyebrow::before{content:"";width:8px;height:8px;background:var(--torch);flex:none}
+h1{margin:0;font-size:clamp(3.2rem,13vw,7.5rem);line-height:.86;letter-spacing:.01em;
+  text-shadow:5px 5px 0 var(--tshadow)}
+.tagline{margin:1.1rem 0 0;font-size:clamp(1.05rem,2.4vw,1.35rem);font-weight:600;
+  color:var(--ink);max-width:26ch;line-height:1.35}
+.lede{margin:.9rem 0 0;color:var(--ink-dim);max-width:52ch}
+
+/* sunucu listesi kartı — sayfanın imzası */
+.mp{max-width:620px;margin-top:2.25rem}
+.mp-title{display:flex;align-items:center;gap:.45rem;font-family:var(--mono);font-size:.68rem;
+  letter-spacing:.18em;color:var(--ink-faint);font-weight:700;margin:0 0 .5rem}
+.mp-title .px{width:18px;height:18px}
+.mp-box{padding:.5rem;box-shadow:inset 2px 2px 0 var(--edge-hi),inset -2px -2px 0 rgba(0,0,0,.22),var(--glow)}
+.mp-row{display:grid;grid-template-columns:52px 1fr auto;gap:.85rem;align-items:center;padding:.7rem}
+.mp-row .px-block{width:52px;height:52px}
+.mp-name{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;font-weight:700;font-size:1.05rem;line-height:1.2}
+.mp-ver{font-family:var(--mono);font-size:.7rem;color:var(--ink-faint);font-weight:400}
+.mp-motd{margin:.15rem 0 0;font-size:.85rem;color:var(--torch-t);line-height:1.45}
+.mp-motd span{color:var(--ink-faint)}
+.mp-meta{text-align:right;display:grid;gap:.3rem;justify-items:end}
+.mp-count{font-family:var(--mono);font-size:.78rem;color:var(--ink-dim);font-weight:700}
+.ping{display:flex;align-items:flex-end;gap:2px;height:13px}
+.ping i{display:block;width:3px;background:var(--ink-faint);opacity:.3}
+.ping i:nth-child(1){height:3px}.ping i:nth-child(2){height:5px}.ping i:nth-child(3){height:8px}
+.ping i:nth-child(4){height:10px}.ping i:nth-child(5){height:13px}
+.ping.on i{background:var(--grass);opacity:1}
+.ping.off i{background:var(--redstone);opacity:.45}
+
+.addr{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:.9rem;
+  max-width:620px;margin-top:.9rem}
+.addr-card{padding:.95rem 1rem}
+.addr-k{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;color:var(--ink-faint);font-weight:700}
+.addr-row{display:flex;gap:.5rem;margin-top:.55rem}
+.addr-val{flex:1;min-width:0;font-family:var(--mono);font-weight:700;font-size:1.05rem;
+  padding:.55rem .7rem;display:flex;align-items:center;overflow-x:auto;white-space:nowrap}
+.addr-row .btn{white-space:nowrap;min-width:7.5rem}
+.addr-note{margin:.55rem 0 0;font-size:.78rem;color:var(--ink-faint);font-family:var(--mono)}
+
+/* ============ bölümler ============ */
+.sec{padding-block:clamp(3.25rem,8vw,5.25rem)}
+.sec+.sec{background-image:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 16px);
+  background-size:100% 2px;background-repeat:no-repeat;background-position:top left}
+.sechead{margin-bottom:2rem;max-width:64ch}
+.sechead .eyebrow{margin-bottom:.7rem}
+h2{margin:0;font-size:clamp(1.5rem,3.6vw,2.25rem);line-height:1.15;text-shadow:3px 3px 0 var(--tshadow)}
+.sechead p{margin:.85rem 0 0;color:var(--ink-dim)}
+code.k{font-family:var(--mono);font-size:.88em;background:var(--slot);padding:.1em .4em;
+  border:2px solid var(--edge-lo);white-space:nowrap;color:var(--ink)}
+
+/* adımlar + sekmeler */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.tab[aria-selected="true"]{background:var(--torch);color:#1c1305;border-color:var(--torch-dark);
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.5),inset -2px -2px 0 rgba(0,0,0,.22),0 3px 0 var(--torch-dark)}
+.panel{padding:clamp(1.1rem,3vw,1.6rem)}
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:1.15rem}
+.steps li{display:grid;grid-template-columns:34px 1fr;gap:.9rem;align-items:start}
+.steps .n{font-family:var(--mono);font-weight:700;font-size:.78rem;color:var(--torch-t);
+  width:34px;height:34px;display:grid;place-items:center}
+.steps strong{display:block;font-weight:700}
+.steps span.t{display:block;color:var(--ink-dim);font-size:.94rem}
+
+/* sunucu kutuları */
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,258px),1fr));gap:1rem}
+.slot{padding:1.25rem;display:flex;flex-direction:column;gap:.5rem}
+.slot .ico{width:52px;height:52px;display:grid;place-items:center;margin-bottom:.5rem}
+.slot .ico .px{width:32px;height:32px}
+.slot h3{margin:.2rem 0 0;font-size:1.1rem}
+.slot p{margin:0;color:var(--ink-dim);font-size:.94rem}
+.slot ul{margin:.35rem 0 0;padding-left:1.1rem;color:var(--ink-dim);font-size:.9rem;line-height:1.75}
+.slot.dim{opacity:.75}
+.tag{display:inline-flex;align-items:center;gap:.4rem;width:fit-content;font-family:var(--mono);
+  font-size:.68rem;letter-spacing:.14em;font-weight:700;padding:.3rem .55rem;border:2px solid currentColor}
+.tag i{width:7px;height:7px;background:currentColor;display:block}
+.t-ok{color:var(--grass)}.t-wait{color:var(--torch-t)}.t-soon{color:var(--ink-faint)}
+
+/* özellik envanteri */
+.items{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,264px),1fr));gap:.9rem}
+.item{display:grid;grid-template-columns:44px 1fr;gap:.9rem;padding:1rem}
+.item .ico{width:44px;height:44px;display:grid;place-items:center}
+.item .ico .px{width:24px;height:24px}
+.item h3{margin:0 0 .2rem;font-family:var(--body);font-weight:700;font-size:1rem;letter-spacing:0}
+.item p{margin:0;color:var(--ink-dim);font-size:.9rem;line-height:1.6}
+
+/* komutlar */
+.cmdbar{display:flex;gap:.6rem;align-items:center;margin-bottom:.9rem;flex-wrap:wrap}
+.cmdbar input{flex:1;min-width:200px;-webkit-appearance:none;appearance:none;border-radius:0;font-family:var(--mono);font-size:.9rem;color:var(--ink);
+  padding:.6rem .75rem;border:2px solid var(--edge-lo);background:var(--slot);
+  box-shadow:inset 2px 2px 0 rgba(0,0,0,.18)}
+.cmdbar input::placeholder{color:var(--ink-faint)}
+.cmdhint{font-size:.8rem;color:var(--ink-faint);font-family:var(--mono)}
+.cmds{display:grid;gap:2px;padding:.5rem}
+.cmd{display:grid;grid-template-columns:minmax(150px,auto) 1fr;gap:1rem;align-items:baseline;
+  width:100%;text-align:left;font:inherit;font-size:.92rem;color:var(--ink-dim);
+  background:var(--slot);border:0;padding:.55rem .8rem;cursor:pointer}
+.cmd:hover{background:var(--panel-2);color:var(--ink)}
+.cmd code{font-family:var(--mono);font-weight:700;font-size:.88rem;color:var(--torch-t)}
+.cmd.hide{display:none}
+.cmdempty{padding:1rem .8rem;color:var(--ink-faint);font-size:.9rem}
+@media(max-width:560px){.cmd{grid-template-columns:1fr;gap:.15rem}}
+
+/* kurallar */
+.rules{display:grid;gap:.7rem;margin:0;padding:0;list-style:none}
+.rules li{display:grid;grid-template-columns:10px 1fr;gap:.85rem;align-items:start;
+  padding:.9rem 1.05rem;border-left-width:6px;border-left-color:var(--oak);
+  color:var(--ink-dim);font-size:.96rem}
+.rules i{width:10px;height:10px;background:var(--oak);display:block;margin-top:.55rem}
+.rules strong{color:var(--ink)}
+
+/* footer */
+footer{border-top:2px solid var(--edge-lo);padding-block:2.5rem;color:var(--ink-faint);font-size:.86rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:.9rem 1.5rem;justify-content:space-between;align-items:center}
+.fbrand{display:flex;align-items:center;gap:.5rem;color:var(--ink-dim);font-family:var(--display);font-size:.9rem}
+.fbrand .px{width:18px;height:18px}
+footer .fmeta{font-family:var(--mono);font-size:.78rem}
+
+@media(max-width:430px){
+  .mp-row{grid-template-columns:40px 1fr auto;gap:.6rem;padding:.55rem}
+  .mp-row .px-block{width:40px;height:40px}
+  .mp-title{letter-spacing:.12em}
+}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,220%);z-index:90;
+  padding:.6rem 1.1rem;font-weight:700;font-size:.88rem;pointer-events:none;
+  transition:transform .2s ease}
+.toast.show{transform:translate(-50%,0)}
+
+/* meşale alevi */
+@keyframes flick{0%,100%{opacity:1}35%{opacity:.72}60%{opacity:.94}80%{opacity:.8}}
+.fl{animation:flick 1.9s steps(2,end) infinite}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#icerik">İçeriğe geç</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><svg class="px px-block" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#5aa832" d="M0 0h1v1h-1zM2 0h1v1h-1zM4 0h2v1h-2zM7 0h1v1h-1zM9 0h1v1h-1zM12 0h2v1h-2zM0 1h5v1h-5zM6 1h2v1h-2zM10 1h2v1h-2zM13 1h3v1h-3zM0 2h1v1h-1zM4 2h8v1h-8zM13 2h3v1h-3zM5 3h2v1h-2zM8 3h4v1h-4zM13 3h2v1h-2z"/><path fill="#7fd44e" d="M1 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h2v1h-2zM14 0h2v1h-2zM5 1h1v1h-1zM8 1h2v1h-2zM12 1h1v1h-1zM1 2h3v1h-3zM12 2h1v1h-1zM0 3h2v1h-2zM3 3h2v1h-2z"/><path fill="#7a5433" d="M2 3h1v1h-1zM7 3h1v1h-1zM12 3h1v1h-1zM15 3h1v1h-1zM0 4h2v1h-2zM3 4h1v1h-1zM7 4h1v1h-1zM10 4h2v1h-2zM13 4h3v1h-3zM0 5h7v1h-7zM9 5h5v1h-5zM15 5h1v1h-1zM0 6h7v1h-7zM8 6h6v1h-6zM15 6h1v1h-1zM4 7h1v1h-1zM9 7h1v1h-1zM11 7h2v1h-2zM14 7h2v1h-2zM0 8h1v1h-1zM2 8h4v1h-4zM8 8h3v1h-3zM13 8h2v1h-2zM0 9h1v1h-1zM2 9h6v1h-6zM9 9h7v1h-7zM0 10h7v1h-7zM9 10h7v1h-7zM0 11h4v1h-4zM6 11h6v1h-6zM13 11h3v1h-3zM0 12h2v1h-2zM3 12h8v1h-8zM14 12h2v1h-2zM1 13h5v1h-5zM8 13h7v1h-7zM0 14h6v1h-6zM7 14h9v1h-9zM0 15h1v1h-1zM2 15h1v1h-1zM5 15h1v1h-1zM7 15h7v1h-7zM15 15h1v1h-1z"/><path fill="#5f3f24" d="M2 4h1v1h-1zM4 4h3v1h-3zM8 4h2v1h-2zM12 4h1v1h-1zM7 5h2v1h-2zM14 5h1v1h-1zM7 6h1v1h-1zM14 6h1v1h-1zM0 7h4v1h-4zM5 7h4v1h-4zM10 7h1v1h-1zM13 7h1v1h-1zM1 8h1v1h-1zM6 8h2v1h-2zM11 8h2v1h-2zM15 8h1v1h-1zM1 9h1v1h-1zM8 9h1v1h-1zM7 10h2v1h-2zM4 11h2v1h-2zM12 11h1v1h-1zM2 12h1v1h-1zM11 12h3v1h-3zM0 13h1v1h-1zM6 13h2v1h-2zM15 13h1v1h-1zM6 14h1v1h-1zM1 15h1v1h-1zM3 15h2v1h-2zM6 15h1v1h-1zM14 15h1v1h-1z"/></svg> ATALMC</a>
+    <nav class="nav">
+      <a href="#baglan">Bağlan</a>
+      <a href="#giris" class="opt">İlk giriş</a>
+      <a href="#sunucular" class="opt">Sunucular</a>
+      <a href="#komutlar" class="opt">Komutlar</a>
+      <a href="#kurallar" class="opt">Kurallar</a>
+      <button class="btn themebtn" id="themebtn" type="button" aria-label="Gündüz temasına geç">
+        <span class="sun"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#ffcf5c" d="M3 3h10v1h-10zM3 4h1v1h-1zM12 4h1v1h-1zM3 5h1v1h-1zM12 5h1v1h-1zM3 6h1v1h-1zM12 6h1v1h-1zM3 7h1v1h-1zM12 7h1v1h-1zM3 8h1v1h-1zM12 8h1v1h-1zM3 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM12 10h1v1h-1zM3 11h1v1h-1zM12 11h1v1h-1zM3 12h10v1h-10z"/><path fill="#fff0b8" d="M4 4h8v1h-8zM4 5h8v1h-8zM4 6h8v1h-8zM4 7h8v1h-8zM4 8h8v1h-8zM4 9h8v1h-8zM4 10h8v1h-8zM4 11h8v1h-8z"/></svg></span>
+        <span class="moon"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#e9eef6" d="M3 3h10v1h-10zM3 4h10v1h-10zM3 5h2v1h-2zM7 5h6v1h-6zM3 6h2v1h-2zM7 6h2v1h-2zM11 6h2v1h-2zM3 7h6v1h-6zM11 7h2v1h-2zM3 8h10v1h-10zM3 9h2v1h-2zM7 9h6v1h-6zM3 10h10v1h-10zM3 11h10v1h-10zM3 12h10v1h-10z"/><path fill="#b9c4d2" d="M5 5h2v1h-2zM5 6h2v1h-2zM9 6h2v1h-2zM9 7h2v1h-2zM5 9h2v1h-2z"/></svg></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="baglan">
+  <svg class="stars" viewBox="0 0 240 90" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false"><path fill="var(--star)" opacity=".85" d="M199 59h1v1h-1zM218 75h1v1h-1zM205 65h1v1h-1zM157 23h1v1h-1zM77 18h1v1h-1zM16 7h1v1h-1zM225 30h1v1h-1zM199 59h1v1h-1zM151 25h1v1h-1zM163 37h1v1h-1zM169 10h1v1h-1zM80 29h1v1h-1zM7 8h1v1h-1zM27 51h1v1h-1zM74 49h1v1h-1zM4 87h1v1h-1zM53 6h1v1h-1zM181 50h1v1h-1zM144 80h1v1h-1zM172 34h1v1h-1zM79 42h1v1h-1zM104 15h1v1h-1zM180 12h1v1h-1zM119 62h1v1h-1zM143 24h1v1h-1zM48 16h1v1h-1zM98 14h1v1h-1zM54 0h1v1h-1zM205 75h1v1h-1zM226 2h1v1h-1zM54 56h1v1h-1zM197 78h1v1h-1zM75 49h1v1h-1zM23 26h1v1h-1zM95 79h1v1h-1z"/><path fill="var(--star)" opacity=".45" d="M115 71h1v1h-1zM207 88h1v1h-1zM152 50h1v1h-1zM167 78h1v1h-1zM159 1h1v1h-1zM71 52h1v1h-1zM238 10h1v1h-1zM100 77h1v1h-1zM25 5h1v1h-1zM62 1h1v1h-1zM150 61h1v1h-1z"/></svg>
+  <svg class="clouds" viewBox="0 0 480 60" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false"><path fill="var(--cloud)" d="M12 10h72v6h-72zM20 4h48v6h-48zM104 26h96v6h-96zM112 20h72v6h-72zM208 6h56v6h-56zM216 0h32v6h-32zM280 30h80v6h-80zM288 24h56v6h-56zM392 14h88v6h-88zM400 8h64v6h-64z"/></svg>
+  <div class="orb" aria-hidden="true"></div>
+  <svg class="horizon" viewBox="0 0 960 208" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><path fill="var(--hill-back)" d="M0 48h16v144h-16zM16 48h16v144h-16zM32 64h16v128h-16zM48 80h16v112h-16zM64 80h16v112h-16zM80 96h16v96h-16zM96 112h16v80h-16zM112 128h16v64h-16zM128 144h16v48h-16zM144 144h16v48h-16zM160 144h16v48h-16zM176 144h16v48h-16zM192 144h16v48h-16zM208 128h16v64h-16zM224 128h16v64h-16zM240 112h16v80h-16zM256 96h16v96h-16zM272 80h16v112h-16zM288 64h16v128h-16zM304 64h16v128h-16zM320 48h16v144h-16zM336 48h16v144h-16zM352 48h16v144h-16zM368 48h16v144h-16zM384 48h16v144h-16zM400 64h16v128h-16zM416 64h16v128h-16zM432 80h16v112h-16zM448 80h16v112h-16zM464 96h16v96h-16zM480 96h16v96h-16zM496 112h16v80h-16zM512 112h16v80h-16zM528 112h16v80h-16zM544 96h16v96h-16zM560 96h16v96h-16zM576 80h16v112h-16zM592 80h16v112h-16zM608 64h16v128h-16zM624 64h16v128h-16zM640 48h16v144h-16zM656 48h16v144h-16zM672 48h16v144h-16zM688 48h16v144h-16zM704 48h16v144h-16zM720 64h16v128h-16zM736 80h16v112h-16zM752 96h16v96h-16zM768 112h16v80h-16zM784 128h16v64h-16zM800 144h16v48h-16zM816 144h16v48h-16zM832 144h16v48h-16zM848 144h16v48h-16zM864 144h16v48h-16zM880 144h16v48h-16zM896 144h16v48h-16zM912 144h16v48h-16zM928 144h16v48h-16zM944 144h16v48h-16z"/><path fill="var(--hill-front)" d="M0 176h16v32h-16zM16 192h16v16h-16zM32 192h16v16h-16zM48 192h16v16h-16zM64 192h16v16h-16zM80 192h16v16h-16zM96 192h16v16h-16zM112 176h16v32h-16zM128 176h16v32h-16zM144 160h16v48h-16zM160 160h16v48h-16zM176 160h16v48h-16zM192 160h16v48h-16zM208 160h16v48h-16zM224 176h16v32h-16zM240 176h16v32h-16zM256 192h16v16h-16zM272 192h16v16h-16zM288 192h16v16h-16zM304 192h16v16h-16zM320 192h16v16h-16zM336 192h16v16h-16zM352 192h16v16h-16zM368 192h16v16h-16zM384 192h16v16h-16zM400 192h16v16h-16zM416 192h16v16h-16zM432 192h16v16h-16zM448 192h16v16h-16zM464 176h16v32h-16zM480 160h16v48h-16zM496 144h16v64h-16zM512 144h16v64h-16zM528 128h16v80h-16zM544 128h16v80h-16zM560 128h16v80h-16zM576 128h16v80h-16zM592 128h16v80h-16zM608 128h16v80h-16zM624 144h16v64h-16zM640 160h16v48h-16zM656 160h16v48h-16zM672 176h16v32h-16zM688 176h16v32h-16zM704 176h16v32h-16zM720 176h16v32h-16zM736 176h16v32h-16zM752 176h16v32h-16zM768 160h16v48h-16zM784 160h16v48h-16zM800 144h16v64h-16zM816 144h16v64h-16zM832 128h16v80h-16zM848 128h16v80h-16zM864 112h16v96h-16zM880 112h16v96h-16zM896 112h16v96h-16zM912 128h16v80h-16zM928 128h16v80h-16zM944 144h16v64h-16z"/><path fill="var(--hill-cap)" d="M0 160h16v16h-16zM16 176h16v16h-16zM32 176h16v16h-16zM48 176h16v16h-16zM64 176h16v16h-16zM80 176h16v16h-16zM96 176h16v16h-16zM112 160h16v16h-16zM128 160h16v16h-16zM144 144h16v16h-16zM160 144h16v16h-16zM176 144h16v16h-16zM192 144h16v16h-16zM208 144h16v16h-16zM224 160h16v16h-16zM240 160h16v16h-16zM256 176h16v16h-16zM272 176h16v16h-16zM288 176h16v16h-16zM304 176h16v16h-16zM320 176h16v16h-16zM336 176h16v16h-16zM352 176h16v16h-16zM368 176h16v16h-16zM384 176h16v16h-16zM400 176h16v16h-16zM416 176h16v16h-16zM432 176h16v16h-16zM448 176h16v16h-16zM464 160h16v16h-16zM480 144h16v16h-16zM496 128h16v16h-16zM512 128h16v16h-16zM528 112h16v16h-16zM544 112h16v16h-16zM560 112h16v16h-16zM576 112h16v16h-16zM592 112h16v16h-16zM608 112h16v16h-16zM624 128h16v16h-16zM640 144h16v16h-16zM656 144h16v16h-16zM672 160h16v16h-16zM688 160h16v16h-16zM704 160h16v16h-16zM720 160h16v16h-16zM736 160h16v16h-16zM752 160h16v16h-16zM768 144h16v16h-16zM784 144h16v16h-16zM800 128h16v16h-16zM816 128h16v16h-16zM832 112h16v16h-16zM848 112h16v16h-16zM864 96h16v16h-16zM880 96h16v16h-16zM896 96h16v16h-16zM912 112h16v16h-16zM928 112h16v16h-16zM944 128h16v16h-16z"/><path fill="var(--tree-trunk)" d="M112 128h16v32h-16zM368 128h16v48h-16zM624 96h16v32h-16z"/><path fill="var(--tree-leaf)" d="M96 96h48v32h-48zM112 80h16v16h-16zM352 96h48v32h-48zM368 80h16v16h-16zM608 64h48v32h-48zM624 48h16v16h-16z"/></svg>
+  <div class="wrap">
+    <p class="eyebrow">ADEM TOLUNAY ANADOLU LİSESİ</p>
+    <h1>ATALMC</h1>
+    <p class="tagline">Okulun kendi Minecraft sunucusu. Java ve Bedrock, aynı dünyada.</p>
+    <p class="lede">1.13'ten 26.2'ye kadar hangi sürüm sende varsa onunla gir. Telefon, tablet ya da
+      bilgisayar fark etmez; hesabın orijinal olmak zorunda değil.</p>
+
+    <div class="mp">
+      <p class="mp-title"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path class="fl" fill="#ff8a1f" d="M7 3h2v1h-2zM6 4h1v1h-1zM9 4h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM7 6h2v1h-2z"/><path class="fl" fill="#ffcf5c" d="M7 4h2v1h-2zM7 5h2v1h-2z"/><path fill="#8a5a33" d="M7 7h2v1h-2zM7 8h2v1h-2zM7 9h2v1h-2zM7 10h2v1h-2zM7 11h2v1h-2zM7 12h2v1h-2zM7 13h2v1h-2z"/></svg> ÇOK OYUNCULU · SUNUCU LİSTESİ</p>
+      <div class="mp-box raised">
+        <div class="mp-row sunken">
+          <svg class="px px-block" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#5aa832" d="M0 0h1v1h-1zM2 0h1v1h-1zM4 0h2v1h-2zM7 0h1v1h-1zM9 0h1v1h-1zM12 0h2v1h-2zM0 1h5v1h-5zM6 1h2v1h-2zM10 1h2v1h-2zM13 1h3v1h-3zM0 2h1v1h-1zM4 2h8v1h-8zM13 2h3v1h-3zM5 3h2v1h-2zM8 3h4v1h-4zM13 3h2v1h-2z"/><path fill="#7fd44e" d="M1 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h2v1h-2zM14 0h2v1h-2zM5 1h1v1h-1zM8 1h2v1h-2zM12 1h1v1h-1zM1 2h3v1h-3zM12 2h1v1h-1zM0 3h2v1h-2zM3 3h2v1h-2z"/><path fill="#7a5433" d="M2 3h1v1h-1zM7 3h1v1h-1zM12 3h1v1h-1zM15 3h1v1h-1zM0 4h2v1h-2zM3 4h1v1h-1zM7 4h1v1h-1zM10 4h2v1h-2zM13 4h3v1h-3zM0 5h7v1h-7zM9 5h5v1h-5zM15 5h1v1h-1zM0 6h7v1h-7zM8 6h6v1h-6zM15 6h1v1h-1zM4 7h1v1h-1zM9 7h1v1h-1zM11 7h2v1h-2zM14 7h2v1h-2zM0 8h1v1h-1zM2 8h4v1h-4zM8 8h3v1h-3zM13 8h2v1h-2zM0 9h1v1h-1zM2 9h6v1h-6zM9 9h7v1h-7zM0 10h7v1h-7zM9 10h7v1h-7zM0 11h4v1h-4zM6 11h6v1h-6zM13 11h3v1h-3zM0 12h2v1h-2zM3 12h8v1h-8zM14 12h2v1h-2zM1 13h5v1h-5zM8 13h7v1h-7zM0 14h6v1h-6zM7 14h9v1h-9zM0 15h1v1h-1zM2 15h1v1h-1zM5 15h1v1h-1zM7 15h7v1h-7zM15 15h1v1h-1z"/><path fill="#5f3f24" d="M2 4h1v1h-1zM4 4h3v1h-3zM8 4h2v1h-2zM12 4h1v1h-1zM7 5h2v1h-2zM14 5h1v1h-1zM7 6h1v1h-1zM14 6h1v1h-1zM0 7h4v1h-4zM5 7h4v1h-4zM10 7h1v1h-1zM13 7h1v1h-1zM1 8h1v1h-1zM6 8h2v1h-2zM11 8h2v1h-2zM15 8h1v1h-1zM1 9h1v1h-1zM8 9h1v1h-1zM7 10h2v1h-2zM4 11h2v1h-2zM12 11h1v1h-1zM2 12h1v1h-1zM11 12h3v1h-3zM0 13h1v1h-1zM6 13h2v1h-2zM15 13h1v1h-1zM6 14h1v1h-1zM1 15h1v1h-1zM3 15h2v1h-2zM6 15h1v1h-1zM14 15h1v1h-1z"/></svg>
+          <div>
+            <div class="mp-name">ATALMC <span class="mp-ver">1.13 – 26.2</span></div>
+            <p class="mp-motd">Survival açık · BedWars hazırlanıyor<br>
+              <span>Java ve Bedrock aynı sunucuda</span></p>
+          </div>
+          <div class="mp-meta">
+            <span class="mp-count" id="count" aria-live="polite">— / —</span>
+            <span class="ping" id="ping" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="addr">
+        <div class="addr-card raised">
+          <div class="addr-k">JAVA · PC</div>
+          <div class="addr-row">
+            <div class="addr-val sunken">84.51.35.247</div>
+            <button class="btn btn-torch copy" type="button" data-copy="84.51.35.247">Kopyala</button>
+          </div>
+          <p class="addr-note">Port 25565 · yazmana gerek yok</p>
+        </div>
+        <div class="addr-card raised">
+          <div class="addr-k">BEDROCK · TELEFON</div>
+          <div class="addr-row">
+            <div class="addr-val sunken">84.51.35.247</div>
+            <button class="btn btn-torch copy" type="button" data-copy="84.51.35.247">Kopyala</button>
+          </div>
+          <p class="addr-note">Port 19132 · elle girmen gerek</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main id="icerik">
+
+<section class="sec" id="giris">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">NASIL GİRİLİR</p>
+      <h2>Dört adımda içeridesin</h2>
+      <p>Sunucuya ilk girdiğinde bir kez şifre belirliyorsun. Hesabın orijinal olmak zorunda değil,
+        ama şifreni unutma — hesabın ona bağlı.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Platform seçimi">
+      <button class="btn tab" role="tab" id="t-java" aria-controls="p-java" aria-selected="true" type="button">Bilgisayar · Java</button>
+      <button class="btn tab" role="tab" id="t-be" aria-controls="p-be" aria-selected="false" tabindex="-1" type="button">Telefon / Konsol · Bedrock</button>
+    </div>
+
+    <div class="panel raised" id="p-java" role="tabpanel" aria-labelledby="t-java">
+      <ol class="steps">
+        <li><span class="n sunken">01</span><span><strong>Çok Oyunculu → Sunucu Ekle</strong>
+          <span class="t">Sunucu adresi kısmına <code class="k">84.51.35.247</code> yaz. Port yazmana gerek yok.</span></span></li>
+        <li><span class="n sunken">02</span><span><strong>Sunucuya katıl</strong>
+          <span class="t">1.13 ile 26.2 arası her sürüm çalışır. Oyunun sürümünü değiştirmene gerek yok.</span></span></li>
+        <li><span class="n sunken">03</span><span><strong>Şifreni belirle</strong>
+          <span class="t">İlk girişte <code class="k">/register şifren şifren</code> yaz — aynı şifreyi iki kez, en az 6 karakter.</span></span></li>
+        <li><span class="n sunken">04</span><span><strong>Sonraki girişler</strong>
+          <span class="t">Sadece <code class="k">/login şifren</code>. Ardından menüden Survival'ı seç.</span></span></li>
+      </ol>
+    </div>
+
+    <div class="panel raised" id="p-be" role="tabpanel" aria-labelledby="t-be" hidden>
+      <ol class="steps">
+        <li><span class="n sunken">01</span><span><strong>Oyna → Sunucular → Sunucu Ekle</strong>
+          <span class="t">Adres <code class="k">84.51.35.247</code>, port <code class="k">19132</code>. Bedrock'ta portu elle girmen gerekiyor.</span></span></li>
+        <li><span class="n sunken">02</span><span><strong>Sunucuya katıl</strong>
+          <span class="t">Telefon, tablet, Windows 10/11 sürümü ve konsollar çalışır.</span></span></li>
+        <li><span class="n sunken">03</span><span><strong>Şifreni belirle</strong>
+          <span class="t">İlk girişte <code class="k">/register şifren şifren</code>. Komutları sohbet tuşundan yazabilirsin.</span></span></li>
+        <li><span class="n sunken">04</span><span><strong>Adının başındaki nokta</strong>
+          <span class="t">Bedrock oyuncuları <code class="k">.OyuncuAdi</code> şeklinde görünür — normal, Java oyuncularından ayırmak için.</span></span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="sunucular">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">SUNUCULAR</p>
+      <h2>Şu an ne oynayabilirsin</h2>
+      <p>Girişte karşına menü çıkıyor. İstediğin zaman nether yıldızına sağ tıkla ya da
+        <code class="k">/menu</code> yaz, aralarında geçiş yap.</p>
+    </div>
+    <div class="slots">
+
+      <article class="slot raised">
+        <span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#8a99a6" d="M14 0h1v1h-1zM13 1h1v1h-1zM12 2h1v1h-1zM11 3h1v1h-1zM10 4h1v1h-1zM9 5h1v1h-1zM8 6h1v1h-1zM7 7h1v1h-1zM6 8h1v1h-1z"/><path fill="#c9d4dc" d="M15 0h1v1h-1zM14 1h1v1h-1zM13 2h1v1h-1zM12 3h1v1h-1zM11 4h1v1h-1zM10 5h1v1h-1zM9 6h1v1h-1zM8 7h1v1h-1zM7 8h1v1h-1zM6 9h1v1h-1z"/><path fill="#eef4f8" d="M15 1h1v1h-1zM14 2h1v1h-1zM13 3h1v1h-1zM12 4h1v1h-1zM11 5h1v1h-1zM10 6h1v1h-1zM9 7h1v1h-1zM8 8h1v1h-1zM7 9h1v1h-1zM6 10h1v1h-1z"/><path fill="#f0b429" d="M4 9h2v1h-2zM3 10h3v1h-3zM3 11h3v1h-3zM4 12h1v1h-1z"/><path fill="#8a5a33" d="M2 11h1v1h-1zM2 12h2v1h-2zM1 13h2v1h-2zM1 14h1v1h-1z"/></svg></span>
+        <span class="tag t-ok"><i></i>AÇIK</span>
+        <h3>Survival</h3>
+        <p>Asıl sunucumuz. Meslek seç, para kazan, ev kur, arazini koru, dükkan aç.</p>
+        <ul>
+          <li>12 meslek, seviye sistemi</li>
+          <li>Ekonomi, dükkanlar, açık artırma</li>
+          <li>Arazi koruma — kimse evini bozamaz</li>
+          <li>Boss'lar, görevler, ödül sandıkları</li>
+        </ul>
+      </article>
+
+      <article class="slot raised dim">
+        <span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#e9e6df" d="M2 4h4v1h-4zM2 5h4v1h-4zM2 6h4v1h-4z"/><path fill="#bfbcb4" d="M2 7h4v1h-4z"/><path fill="#c8433a" d="M6 5h8v1h-8zM6 6h8v1h-8z"/><path fill="#9c332c" d="M6 7h8v1h-8z"/><path fill="#8a5a33" d="M1 8h14v1h-14zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h2v1h-2zM13 11h2v1h-2zM1 12h2v1h-2zM13 12h2v1h-2z"/></svg></span>
+        <span class="tag t-wait"><i></i>HAZIRLANIYOR</span>
+        <h3>BedWars</h3>
+        <p>Takım savaşı. Yatağını koru, rakiplerinkini kır. Harita hazır, ayarları yapılıyor.</p>
+        <ul>
+          <li>4 takım, ada ada arena</li>
+          <li>Jeneratörler ve takım mağazası</li>
+        </ul>
+      </article>
+
+      <article class="slot raised dim">
+        <span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#c8a06a" d="M2 2h10v1h-10zM2 3h1v1h-1zM4 3h6v1h-6zM11 3h1v1h-1zM2 4h10v1h-10z"/><path fill="#a8814f" d="M3 3h1v1h-1zM10 3h1v1h-1z"/><path fill="#7b8894" d="M2 5h10v1h-10zM2 6h2v1h-2zM10 6h2v1h-2zM2 7h2v1h-2zM10 7h2v1h-2zM2 8h2v1h-2zM10 8h2v1h-2zM2 9h2v1h-2zM10 9h2v1h-2zM2 10h10v1h-10zM2 11h1v1h-1zM4 11h6v1h-6zM11 11h1v1h-1zM2 12h10v1h-10z"/><path fill="#59636d" d="M5 7h4v1h-4zM5 8h4v1h-4zM3 11h1v1h-1zM10 11h1v1h-1z"/><path fill="#454f59" d="M4 6h6v1h-6zM4 7h1v1h-1zM9 7h1v1h-1zM4 8h1v1h-1zM9 8h1v1h-1zM4 9h6v1h-6z"/></svg></span>
+        <span class="tag t-soon"><i></i>YAKINDA</span>
+        <h3>Forge</h3>
+        <p>Ağır modlu sunucu — makineler, teknoloji, otomasyon. Üzerinde çalışıyoruz.</p>
+        <ul>
+          <li>Modpack seçimi yapılıyor</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="neler-var">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">SURVIVAL</p>
+      <h2>Neler var</h2>
+      <p>Boş bir survival değil — oynadıkça kazandığın, kazandığını harcayabildiğin bir düzen kurduk.</p>
+    </div>
+    <div class="items">
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#7b8894" d="M4 2h8v1h-8zM3 3h1v1h-1zM6 3h4v1h-4zM12 3h1v1h-1zM3 4h1v1h-1zM7 4h2v1h-2zM12 4h1v1h-1zM3 5h1v1h-1zM7 5h2v1h-2zM12 5h1v1h-1zM7 6h2v1h-2z"/><path fill="#59636d" d="M4 3h2v1h-2zM10 3h2v1h-2zM4 4h1v1h-1zM11 4h1v1h-1z"/><path fill="#8a5a33" d="M6 7h2v1h-2zM5 8h2v1h-2zM4 9h2v1h-2zM3 10h2v1h-2zM2 11h2v1h-2zM2 12h1v1h-1z"/></svg></span><div>
+        <h3>Meslekler</h3><p>Madenci, çiftçi, avcı, inşaatçı… 12 meslek var. Aynı anda 3 tanesini seçer, oynadıkça para kazanırsın.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#2f6b1a" d="M5 2h5v1h-5zM4 3h1v1h-1zM10 3h1v1h-1zM3 4h1v1h-1zM11 4h1v1h-1zM2 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM12 6h1v1h-1zM2 7h1v1h-1zM12 7h1v1h-1zM2 8h1v1h-1zM12 8h1v1h-1zM3 9h1v1h-1zM11 9h1v1h-1zM4 10h1v1h-1zM10 10h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM6 12h3v1h-3z"/><path fill="#5aa832" d="M6 4h3v1h-3zM5 5h5v1h-5zM4 6h7v1h-7zM4 7h7v1h-7zM4 8h7v1h-7zM4 9h7v1h-7zM5 10h5v1h-5zM6 11h3v1h-3z"/><path fill="#7fd44e" d="M5 3h5v1h-5zM4 4h2v1h-2zM9 4h2v1h-2zM3 5h2v1h-2zM10 5h2v1h-2zM3 6h1v1h-1zM11 6h1v1h-1zM3 7h1v1h-1zM11 7h1v1h-1zM3 8h1v1h-1zM11 8h1v1h-1z"/></svg></span><div>
+        <h3>Ekonomi</h3><p>₺ ile alışveriş. Başlangıçta 250₺ veriliyor. Dükkandan al, açık artırmaya koy, arkadaşına para gönder.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#5f3d22" d="M2 3h10v1h-10zM2 4h1v1h-1zM11 4h1v1h-1zM2 5h1v1h-1zM11 5h1v1h-1zM2 6h4v1h-4zM8 6h4v1h-4zM2 7h1v1h-1zM11 7h1v1h-1zM2 8h1v1h-1zM11 8h1v1h-1zM2 9h1v1h-1zM11 9h1v1h-1zM2 10h10v1h-10z"/><path fill="#8a5a33" d="M3 4h8v1h-8zM3 5h3v1h-3zM8 5h3v1h-3zM3 7h3v1h-3zM8 7h3v1h-3zM3 8h8v1h-8zM3 9h8v1h-8z"/><path fill="#f0b429" d="M6 5h2v1h-2zM6 6h2v1h-2zM6 7h2v1h-2z"/></svg></span><div>
+        <h3>Kendi dükkanın</h3><p>Sandığının üstüne tabela asıp dükkanını kurabilirsin. Sen oyunda değilken bile satış yapar.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#b57d13" d="M5 2h6v1h-6zM5 3h1v1h-1zM10 3h1v1h-1zM5 4h1v1h-1zM10 4h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM5 6h6v1h-6zM6 7h1v1h-1zM9 7h1v1h-1z"/><path fill="#f0b429" d="M6 3h4v1h-4zM6 4h4v1h-4zM6 5h4v1h-4z"/><path fill="#8a5a33" d="M7 7h2v1h-2zM7 8h2v1h-2zM7 9h2v1h-2zM7 10h2v1h-2zM7 11h2v1h-2zM7 12h2v1h-2zM7 13h2v1h-2z"/></svg></span><div>
+        <h3>Arazi koruma</h3><p>Altın kürekle alanını seç ve kilitle. Kimse evini bozamaz, sandığını açamaz.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#7fd44e" d="M10 3h3v1h-3zM10 4h3v1h-3zM6 5h3v1h-3zM10 5h3v1h-3zM6 6h3v1h-3zM10 6h3v1h-3zM2 7h3v1h-3zM6 7h3v1h-3zM10 7h3v1h-3zM2 8h3v1h-3zM6 8h3v1h-3zM10 8h3v1h-3zM2 9h3v1h-3zM6 9h3v1h-3zM10 9h3v1h-3zM2 10h3v1h-3zM6 10h3v1h-3zM10 10h3v1h-3z"/></svg></span><div>
+        <h3>Beceriler</h3><p>Madencilik, dövüş, çiftçilik gibi beceriler oynadıkça gelişir, yeni yetenekler açılır.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#e9e6df" d="M3 2h10v1h-10zM2 3h12v1h-12zM2 4h2v1h-2zM6 4h4v1h-4zM12 4h2v1h-2zM2 5h2v1h-2zM6 5h4v1h-4zM12 5h2v1h-2zM2 6h12v1h-12zM2 7h5v1h-5zM9 7h5v1h-5zM2 8h5v1h-5zM9 8h5v1h-5zM3 9h10v1h-10zM4 10h2v1h-2zM7 10h2v1h-2zM10 10h2v1h-2z"/><path fill="#2a3138" d="M4 4h2v1h-2zM10 4h2v1h-2zM4 5h2v1h-2zM10 5h2v1h-2zM7 7h2v1h-2zM7 8h2v1h-2z"/></svg></span><div>
+        <h3>Boss ve görevler</h3><p>Özel canavarlar, zindanlar ve görev zincirleri. Bitirdikçe ödül ve ganimet.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#f0b429" d="M6 2h4v1h-4zM5 3h2v1h-2zM9 3h2v1h-2zM5 4h1v1h-1zM10 4h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM5 6h2v1h-2zM9 6h2v1h-2zM6 7h4v1h-4zM7 8h2v1h-2zM7 9h2v1h-2zM7 10h3v1h-3zM7 11h2v1h-2zM7 12h3v1h-3zM7 13h2v1h-2z"/><path fill="#b57d13" d="M7 3h2v1h-2zM6 4h1v1h-1zM9 4h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM7 6h2v1h-2z"/></svg></span><div>
+        <h3>Ödül sandıkları</h3><p>Anahtar topla, sandık aç. İçinden nadir eşyalar ve para çıkar.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#8a5a33" d="M2 2h2v1h-2zM10 2h2v1h-2zM2 3h2v1h-2zM10 3h2v1h-2zM2 4h10v1h-10zM2 5h2v1h-2zM10 5h2v1h-2zM2 6h2v1h-2zM10 6h2v1h-2zM2 7h10v1h-10zM2 8h2v1h-2zM10 8h2v1h-2zM2 9h2v1h-2zM10 9h2v1h-2zM2 10h10v1h-10zM2 11h2v1h-2zM10 11h2v1h-2zM2 12h2v1h-2zM10 12h2v1h-2z"/></svg></span><div>
+        <h3>Pratik detaylar</h3><p>Ağacı tek vuruşta kes, merdivene otur, tabelayla asansör kur. Küçük ama hayat kurtaran şeyler.</p></div></div>
+      <div class="item raised"><span class="ico sunken"><svg class="px" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#5f3d22" d="M2 2h10v1h-10zM2 3h1v1h-1zM11 3h1v1h-1zM2 4h1v1h-1zM11 4h1v1h-1zM2 5h1v1h-1zM11 5h1v1h-1zM2 6h1v1h-1zM11 6h1v1h-1zM2 7h1v1h-1zM11 7h1v1h-1zM3 8h1v1h-1zM10 8h1v1h-1zM4 9h1v1h-1zM9 9h1v1h-1zM5 10h1v1h-1zM8 10h1v1h-1zM6 11h2v1h-2z"/><path fill="#8a5a33" d="M3 3h8v1h-8zM3 4h2v1h-2zM9 4h2v1h-2zM3 5h2v1h-2zM9 5h2v1h-2zM3 6h8v1h-8zM3 7h8v1h-8zM4 8h6v1h-6zM5 9h4v1h-4zM6 10h2v1h-2z"/><path fill="#c9d4dc" d="M5 4h4v1h-4zM5 5h4v1h-4z"/></svg></span><div>
+        <h3>Hile koruması</h3><p>Anticheat açık, yapılan değişiklikler kayıtlı. Biri bir şeyi bozarsa geri alınabiliyor.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="komutlar">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">KOMUTLAR</p>
+      <h2>Bilmen gereken komutlar</h2>
+      <p>Hepsi Türkçe, İngilizcelerini ezberlemene gerek yok. Bir komuta dokun, panoya kopyalansın.</p>
+    </div>
+    <div class="cmdbar">
+      <input type="search" id="cmdsearch" placeholder="Komut ara — ev, para, meslek…" aria-label="Komut ara">
+      <span class="cmdhint" id="cmdcount"></span>
+    </div>
+    <div class="cmds raised" id="cmdlist">
+      <button class="cmd" type="button" data-copy="/register"><code>/register şifre şifre</code><span>İlk girişte hesabını oluşturur</span></button>
+      <button class="cmd" type="button" data-copy="/login"><code>/login şifre</code><span>Sonraki girişlerde giriş yapar</span></button>
+      <button class="cmd" type="button" data-copy="/kit baslangic"><code>/kit baslangic</code><span>Başlangıç eşyalarını verir</span></button>
+      <button class="cmd" type="button" data-copy="/meslekler"><code>/meslekler</code><span>Meslek listesini açar</span></button>
+      <button class="cmd" type="button" data-copy="/evkur"><code>/evkur</code><span>Bulunduğun yeri ev olarak işaretler</span></button>
+      <button class="cmd" type="button" data-copy="/ev"><code>/ev</code><span>Evine ışınlanır</span></button>
+      <button class="cmd" type="button" data-copy="/dukkan"><code>/dukkan</code><span>Alışveriş menüsünü açar</span></button>
+      <button class="cmd" type="button" data-copy="/para"><code>/para</code><span>Bakiyeni gösterir</span></button>
+      <button class="cmd" type="button" data-copy="/ode"><code>/ode oyuncu miktar</code><span>Birine para gönderir</span></button>
+      <button class="cmd" type="button" data-copy="/acikartirma"><code>/acikartirma</code><span>Açık artırmayı açar</span></button>
+      <button class="cmd" type="button" data-copy="/beceriler"><code>/beceriler</code><span>Beceri seviyelerini gösterir</span></button>
+      <button class="cmd" type="button" data-copy="/isin"><code>/isin oyuncu</code><span>Birinin yanına ışınlanma isteği yollar</span></button>
+      <button class="cmd" type="button" data-copy="/kabul"><code>/kabul</code><span>Gelen ışınlanma isteğini kabul eder</span></button>
+      <button class="cmd" type="button" data-copy="/menu"><code>/menu</code><span>Sunucu seçim menüsünü açar</span></button>
+      <button class="cmd" type="button" data-copy="/kurallar"><code>/kurallar</code><span>Sunucu kurallarını gösterir</span></button>
+      <p class="cmdempty" id="cmdempty" hidden>Bu isimde bir komut yok. Aramayı kısaltmayı dene.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="kurallar">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="eyebrow">KURALLAR</p>
+      <h2>Uyman gerekenler</h2>
+      <p>Burası okul sunucusu. Kuralı çiğneyen önce uyarılır, tekrarında sunucudan atılır.</p>
+    </div>
+    <ul class="rules">
+      <li class="raised"><i></i><span><strong>Saygılı ol.</strong> Hakaret, küfür ve aşağılama yasak.</span></li>
+      <li class="raised"><i></i><span><strong>Başkasının emeğine dokunma.</strong> Yapısını bozma, eşyasını çalma.</span></li>
+      <li class="raised"><i></i><span><strong>Hile kullanma.</strong> X-ray ve yasak modlar dahil. Anticheat açık.</span></li>
+      <li class="raised"><i></i><span><strong>Reklam yapma.</strong> Başka sunucu tanıtma.</span></li>
+      <li class="raised"><i></i><span><strong>Spam yapma.</strong> Büyük harfle bağırma, sohbeti doldurma.</span></li>
+      <li class="raised"><i></i><span><strong>Arazini koru.</strong> Korumasız bıraktığın alan risk altındadır.</span></li>
+      <li class="raised"><i></i><span><strong>Sorunu yetkiliye bildir.</strong> Kendin halletmeye çalışma.</span></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fbrand"><svg class="px px-block" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="#5aa832" d="M0 0h1v1h-1zM2 0h1v1h-1zM4 0h2v1h-2zM7 0h1v1h-1zM9 0h1v1h-1zM12 0h2v1h-2zM0 1h5v1h-5zM6 1h2v1h-2zM10 1h2v1h-2zM13 1h3v1h-3zM0 2h1v1h-1zM4 2h8v1h-8zM13 2h3v1h-3zM5 3h2v1h-2zM8 3h4v1h-4zM13 3h2v1h-2z"/><path fill="#7fd44e" d="M1 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h2v1h-2zM14 0h2v1h-2zM5 1h1v1h-1zM8 1h2v1h-2zM12 1h1v1h-1zM1 2h3v1h-3zM12 2h1v1h-1zM0 3h2v1h-2zM3 3h2v1h-2z"/><path fill="#7a5433" d="M2 3h1v1h-1zM7 3h1v1h-1zM12 3h1v1h-1zM15 3h1v1h-1zM0 4h2v1h-2zM3 4h1v1h-1zM7 4h1v1h-1zM10 4h2v1h-2zM13 4h3v1h-3zM0 5h7v1h-7zM9 5h5v1h-5zM15 5h1v1h-1zM0 6h7v1h-7zM8 6h6v1h-6zM15 6h1v1h-1zM4 7h1v1h-1zM9 7h1v1h-1zM11 7h2v1h-2zM14 7h2v1h-2zM0 8h1v1h-1zM2 8h4v1h-4zM8 8h3v1h-3zM13 8h2v1h-2zM0 9h1v1h-1zM2 9h6v1h-6zM9 9h7v1h-7zM0 10h7v1h-7zM9 10h7v1h-7zM0 11h4v1h-4zM6 11h6v1h-6zM13 11h3v1h-3zM0 12h2v1h-2zM3 12h8v1h-8zM14 12h2v1h-2zM1 13h5v1h-5zM8 13h7v1h-7zM0 14h6v1h-6zM7 14h9v1h-9zM0 15h1v1h-1zM2 15h1v1h-1zM5 15h1v1h-1zM7 15h7v1h-7zM15 15h1v1h-1z"/><path fill="#5f3f24" d="M2 4h1v1h-1zM4 4h3v1h-3zM8 4h2v1h-2zM12 4h1v1h-1zM7 5h2v1h-2zM14 5h1v1h-1zM7 6h1v1h-1zM14 6h1v1h-1zM0 7h4v1h-4zM5 7h4v1h-4zM10 7h1v1h-1zM13 7h1v1h-1zM1 8h1v1h-1zM6 8h2v1h-2zM11 8h2v1h-2zM15 8h1v1h-1zM1 9h1v1h-1zM8 9h1v1h-1zM7 10h2v1h-2zM4 11h2v1h-2zM12 11h1v1h-1zM2 12h1v1h-1zM11 12h3v1h-3zM0 13h1v1h-1zM6 13h2v1h-2zM15 13h1v1h-1zM6 14h1v1h-1zM1 15h1v1h-1zM3 15h2v1h-2zM6 15h1v1h-1zM14 15h1v1h-1z"/></svg> ATALMC — Adem Tolunay Anadolu Lisesi</div>
+    <div class="fmeta">Java 84.51.35.247 · Bedrock 19132 · Sürüm 1.13 – 26.2</div>
+  </div>
+</footer>
+
+<div class="toast raised" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement;
+
+  /* ---- tema ---- */
+  var btn=document.getElementById("themebtn");
+  function setTheme(t){
+    root.setAttribute("data-theme",t);
+    btn.setAttribute("aria-label", t==="night" ? "Gündüz temasına geç" : "Gece temasına geç");
+    var m=document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute("content", t==="night" ? "#12161a" : "#e7edf0");
+  }
+  btn.addEventListener("click",function(){
+    var next=root.getAttribute("data-theme")==="night"?"day":"night";
+    setTheme(next);
+    try{localStorage.setItem("atalmc-theme",next);}catch(e){}
+  });
+  setTheme(root.getAttribute("data-theme")||"night");
+
+  /* ---- kopyalama + toast ---- */
+  var toast=document.getElementById("toast"), tmr;
+  function say(msg){
+    toast.textContent=msg; toast.classList.add("show");
+    clearTimeout(tmr); tmr=setTimeout(function(){toast.classList.remove("show");},1800);
+  }
+  function copy(text,done){
+    function fallback(){
+      var ta=document.createElement("textarea");
+      ta.value=text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.left="-9999px";
+      document.body.appendChild(ta); ta.select();
+      try{document.execCommand("copy"); done();}catch(e){say("Kopyalanamadı — elle seçip kopyala.");}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done,fallback);
+    }else fallback();
+  }
+  document.querySelectorAll(".copy").forEach(function(b){
+    b.addEventListener("click",function(){
+      var v=b.getAttribute("data-copy"), old=b.textContent;
+      copy(v,function(){
+        b.textContent="Kopyalandı"; b.classList.add("ok"); say("Adres kopyalandı: "+v);
+        setTimeout(function(){b.textContent=old;b.classList.remove("ok");},1800);
+      });
+    });
+  });
+
+  /* ---- sekmeler ---- */
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  function select(t){
+    tabs.forEach(function(o){
+      var on=o===t;
+      o.setAttribute("aria-selected",on?"true":"false");
+      o.tabIndex=on?0:-1;
+      document.getElementById(o.getAttribute("aria-controls")).hidden=!on;
+    });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click",function(){select(t);});
+    t.addEventListener("keydown",function(e){
+      if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft") return;
+      e.preventDefault();
+      var i=tabs.indexOf(t), n=tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length];
+      select(n); n.focus();
+    });
+  });
+
+  /* ---- komut arama + kopyalama ---- */
+  var list=document.getElementById("cmdlist"),
+      cmds=[].slice.call(list.querySelectorAll(".cmd")),
+      search=document.getElementById("cmdsearch"),
+      empty=document.getElementById("cmdempty"),
+      counter=document.getElementById("cmdcount");
+  function tr(s){return s.toLocaleLowerCase("tr");}
+  function filter(){
+    var q=tr(search.value.trim()), shown=0;
+    cmds.forEach(function(c){
+      var hit=!q||tr(c.textContent).indexOf(q)>-1;
+      c.classList.toggle("hide",!hit);
+      if(hit) shown++;
+    });
+    empty.hidden=shown>0;
+    counter.textContent=q?shown+" komut":"";
+  }
+  search.addEventListener("input",filter);
+  cmds.forEach(function(c){
+    c.addEventListener("click",function(){
+      var v=c.getAttribute("data-copy");
+      copy(v,function(){say(v+" kopyalandı");});
+    });
+  });
+
+  /* ---- canlı sunucu durumu ---- */
+  /* Sunucu IP'sini değiştirirsen aşağıdaki adresi de güncelle. */
+  var count=document.getElementById("count"), ping=document.getElementById("ping");
+  (function status(){
+    if(!window.fetch) return;
+    var ctrl=("AbortController" in window)?new AbortController():null;
+    var to=setTimeout(function(){ if(ctrl) ctrl.abort(); },7000);
+    fetch("https://api.mcsrvstat.us/3/84.51.35.247",ctrl?{signal:ctrl.signal}:{})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        clearTimeout(to);
+        if(d&&d.online){
+          var p=d.players||{};
+          count.textContent=(p.online!=null?p.online:"?")+" / "+(p.max!=null?p.max:"?");
+          ping.classList.add("on");
+        }else{
+          count.textContent="Kapalı";
+          ping.classList.add("off");
+        }
+      })
+      .catch(function(){ clearTimeout(to); count.textContent="Durum yok"; });
+  })();
+})();
+</script>
+</body>
+</html>

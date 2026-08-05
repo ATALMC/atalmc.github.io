@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATALMC — Adem Tolunay Anadolu Lisesi Minecraft Sunucusu</title>
+<meta name="description" content="Adem Tolunay Anadolu Lisesi'nin resmi Minecraft sunucusu. Java ve Bedrock destekli, 1.13'ten 26.2'ye kadar tüm sürümler.">
+<style>
+:root{
+  --ground:#0f1720; --surface:#182230; --surface-2:#1f2b3a; --line:#2a3949;
+  --ink:#e6edf5; --ink-dim:#93a4b8; --ink-faint:#64768c;
+  --accent:#38bdf8; --accent-2:#5eead4; --accent-ink:#062330;
+  --ok:#34d399; --wait:#fbbf24; --soon:#7c8da3;
+  --slot:#131c27; --slot-line:#2b3a4b;
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 12px 30px -12px rgba(0,0,0,.6);
+  --fs-display:clamp(2.6rem,7vw,5.2rem);
+  --fs-h2:clamp(1.5rem,3vw,2.1rem);
+  --fs-body:1.0625rem;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --maxw:1120px;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --ground:#f4f7fa; --surface:#ffffff; --surface-2:#eef3f8; --line:#d6e0ea;
+    --ink:#0e1a26; --ink-dim:#4a5c70; --ink-faint:#71869c;
+    --accent:#0284c7; --accent-2:#0d9488; --accent-ink:#ffffff;
+    --ok:#059669; --wait:#b45309; --soon:#8496a8;
+    --slot:#e9eff6; --slot-line:#cdd9e5;
+    --shadow:0 1px 0 rgba(255,255,255,.9) inset, 0 10px 26px -14px rgba(15,40,70,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1720; --surface:#182230; --surface-2:#1f2b3a; --line:#2a3949;
+  --ink:#e6edf5; --ink-dim:#93a4b8; --ink-faint:#64768c;
+  --accent:#38bdf8; --accent-2:#5eead4; --accent-ink:#062330;
+  --ok:#34d399; --wait:#fbbf24; --soon:#7c8da3;
+  --slot:#131c27; --slot-line:#2b3a4b;
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 12px 30px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="light"]{
+  --ground:#f4f7fa; --surface:#ffffff; --surface-2:#eef3f8; --line:#d6e0ea;
+  --ink:#0e1a26; --ink-dim:#4a5c70; --ink-faint:#71869c;
+  --accent:#0284c7; --accent-2:#0d9488; --accent-ink:#ffffff;
+  --ok:#059669; --wait:#b45309; --soon:#8496a8;
+  --slot:#e9eff6; --slot-line:#cdd9e5;
+  --shadow:0 1px 0 rgba(255,255,255,.9) inset, 0 10px 26px -14px rgba(15,40,70,.35);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:var(--fs-body);line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1rem,4vw,2rem)}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:1rem;height:60px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:-.02em;font-size:1.05rem}
+.brand .cube{width:22px;height:22px;flex:none;border-radius:3px;
+  background:linear-gradient(135deg,var(--accent-2),var(--accent));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.topnav{margin-left:auto;display:flex;gap:.25rem;align-items:center}
+.topnav a{color:var(--ink-dim);text-decoration:none;font-size:.9rem;padding:.45rem .7rem;border-radius:6px}
+.topnav a:hover{color:var(--ink);background:var(--surface-2)}
+@media (max-width:720px){.topnav a.opt{display:none}}
+.themebtn{border:1px solid var(--line);background:var(--surface);color:var(--ink-dim);
+  width:34px;height:34px;border-radius:7px;cursor:pointer;display:grid;place-items:center;font-size:.95rem}
+.themebtn:hover{color:var(--ink);border-color:var(--accent)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+#voxel{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none}
+.hero .wrap{position:relative;padding-block:clamp(3rem,9vw,6rem)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent-2);margin:0 0 1rem}
+h1{font-size:var(--fs-display);line-height:.94;letter-spacing:-.045em;font-weight:900;
+  margin:0 0 1rem;text-wrap:balance}
+h1 .sub{display:block;font-size:clamp(1rem,2.2vw,1.35rem);font-weight:600;letter-spacing:-.01em;
+  color:var(--ink-dim);margin-top:.85rem;line-height:1.4}
+.lede{max-width:60ch;color:var(--ink-dim);margin:0 0 2rem}
+
+/* ip card */
+.ipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1rem;max-width:760px}
+.ipcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;
+  box-shadow:var(--shadow)}
+.ipcard h3{margin:0 0 .1rem;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:700}
+.ipcard .meta{font-size:.8rem;color:var(--ink-faint);margin-top:.55rem;font-family:var(--mono)}
+.copyrow{display:flex;align-items:stretch;gap:.5rem;margin-top:.7rem}
+.ipval{flex:1;min-width:0;font-family:var(--mono);font-size:1.15rem;font-weight:700;letter-spacing:-.01em;
+  background:var(--slot);border:1px solid var(--slot-line);border-radius:8px;padding:.6rem .75rem;
+  display:flex;align-items:center;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.copybtn{flex:none;border:none;cursor:pointer;border-radius:8px;padding:0 1rem;font-weight:800;
+  font-size:.85rem;letter-spacing:.02em;background:var(--accent);color:var(--accent-ink);
+  transition:transform .12s ease, filter .12s ease}
+.copybtn:hover{filter:brightness(1.08)}
+.copybtn:active{transform:translateY(1px)}
+.copybtn.done{background:var(--ok)}
+
+/* ---------- sections ---------- */
+section{padding-block:clamp(3rem,7vw,5rem)}
+.sechead{margin-bottom:2rem}
+.sechead .k{font-family:var(--mono);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent-2);display:block;margin-bottom:.5rem}
+h2{font-size:var(--fs-h2);letter-spacing:-.03em;font-weight:850;margin:0;text-wrap:balance}
+.sechead p{color:var(--ink-dim);margin:.6rem 0 0;max-width:62ch}
+
+/* server slots */
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1rem}
+.slot{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:1.3rem;display:flex;flex-direction:column;gap:.55rem;box-shadow:var(--shadow)}
+.slot .icon{width:44px;height:44px;border-radius:9px;display:grid;place-items:center;
+  background:var(--slot);border:1px solid var(--slot-line);margin-bottom:.35rem}
+.slot .icon svg{width:24px;height:24px}
+.slot h3{margin:0;font-size:1.15rem;letter-spacing:-.02em;font-weight:800}
+.slot p{margin:0;color:var(--ink-dim);font-size:.95rem}
+.status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.72rem;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.28rem .55rem;border-radius:5px;
+  width:fit-content}
+.status .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.st-wait{color:var(--wait);background:color-mix(in srgb,var(--wait) 14%,transparent)}
+.st-soon{color:var(--soon);background:color-mix(in srgb,var(--soon) 14%,transparent)}
+.slot.dim{opacity:.72}
+.slot ul{margin:.3rem 0 0;padding-left:1.1rem;color:var(--ink-dim);font-size:.9rem;line-height:1.7}
+
+/* tabs */
+.tabs{display:flex;gap:.4rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--ink-dim);cursor:pointer;
+  padding:.55rem 1.1rem;border-radius:8px;font-weight:700;font-size:.92rem;font-family:inherit}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.4rem;
+  box-shadow:var(--shadow)}
+.panel[hidden]{display:none}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:1rem}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:.85rem;align-items:start}
+ol.steps li::before{content:counter(s);font-family:var(--mono);font-weight:800;font-size:.8rem;
+  width:30px;height:30px;display:grid;place-items:center;border-radius:7px;
+  background:var(--slot);border:1px solid var(--slot-line);color:var(--accent)}
+ol.steps strong{display:block;margin-bottom:.1rem}
+ol.steps span{color:var(--ink-dim);font-size:.94rem}
+code.inline{font-family:var(--mono);font-size:.9em;background:var(--slot);border:1px solid var(--slot-line);
+  padding:.12em .42em;border-radius:5px;color:var(--ink);white-space:nowrap}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.85rem}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.05rem 1.15rem}
+.feat h4{margin:0 0 .3rem;font-size:1rem;letter-spacing:-.01em;font-weight:800}
+.feat p{margin:0;color:var(--ink-dim);font-size:.9rem;line-height:1.6}
+
+/* command table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.94rem}
+th,td{text-align:left;padding:.72rem 1rem;border-bottom:1px solid var(--line)}
+thead th{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+  font-family:var(--mono);font-weight:700;background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:none}
+td.cmd{font-family:var(--mono);font-weight:700;color:var(--accent);white-space:nowrap}
+td.desc{color:var(--ink-dim)}
+
+/* rules */
+.rules{display:grid;gap:.6rem;counter-reset:r;margin:0;padding:0;list-style:none}
+.rules li{counter-increment:r;background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:.85rem 1.05rem;display:grid;grid-template-columns:26px 1fr;gap:.8rem;align-items:baseline;
+  color:var(--ink-dim);font-size:.95rem}
+.rules li::before{content:counter(r);font-family:var(--mono);font-weight:800;font-size:.82rem;color:var(--accent-2)}
+.rules strong{color:var(--ink)}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding-block:2.5rem;color:var(--ink-faint);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+footer .fbrand{display:flex;align-items:center;gap:.55rem;color:var(--ink-dim);font-weight:700}
+footer .fbrand .cube{width:16px;height:16px;border-radius:3px;
+  background:linear-gradient(135deg,var(--accent-2),var(--accent))}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="cube" aria-hidden="true"></span> ATALMC</div>
+    <nav class="topnav">
+      <a href="#baglan">Bağlan</a>
+      <a href="#sunucular" class="opt">Sunucular</a>
+      <a href="#neler-var" class="opt">Neler var</a>
+      <a href="#komutlar" class="opt">Komutlar</a>
+      <a href="#kurallar" class="opt">Kurallar</a>
+      <button class="themebtn" id="themebtn" type="button" aria-label="Temayı değiştir" title="Temayı değiştir">◑</button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <canvas id="voxel" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="eyebrow">Adem Tolunay Anadolu Lisesi</p>
+    <h1>ATALMC
+      <span class="sub">Okulumuzun kendi Minecraft sunucusu. Java ve Bedrock, aynı dünyada.</span>
+    </h1>
+    <p class="lede">Sürüm derdi yok — 1.13'ten 26.2'ye kadar hangi Minecraft'ın varsa girebilirsin.
+      Telefondan, tabletten ya da bilgisayardan; hesabın orijinal olmasa da olur.</p>
+
+    <div class="ipgrid" id="baglan">
+      <div class="ipcard">
+        <h3>Java Edition</h3>
+        <div class="copyrow">
+          <div class="ipval" id="ip-java">84.51.35.247</div>
+          <button class="copybtn" type="button" data-copy="84.51.35.247">Kopyala</button>
+        </div>
+        <div class="meta">Port 25565 · yazmana gerek yok</div>
+      </div>
+      <div class="ipcard">
+        <h3>Bedrock / Mobil</h3>
+        <div class="copyrow">
+          <div class="ipval" id="ip-be">84.51.35.247</div>
+          <button class="copybtn" type="button" data-copy="84.51.35.247">Kopyala</button>
+        </div>
+        <div class="meta">Port 19132 · elle girilmeli</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<section id="sunucular">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="k">Sunucular</span>
+      <h2>Şu an ne oynayabilirsin</h2>
+      <p>Girişte karşına çıkan menüden seçim yapıyorsun. Nether yıldızına sağ tıkla ya da
+        <code class="inline">/menu</code> yaz.</p>
+    </div>
+    <div class="slots">
+
+      <article class="slot">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 3.5 20.5 9.5 9 21H3v-6z"/><path d="M12 6 18 12"/>
+          </svg>
+        </div>
+        <span class="status st-ok"><span class="dot"></span>Açık</span>
+        <h3>Survival</h3>
+        <p>Asıl sunucumuz. Meslek seç, para kazan, ev kur, arazini koru, dükkan aç.</p>
+        <ul>
+          <li>12 meslek, seviye sistemi</li>
+          <li>Ekonomi, dükkanlar, açık artırma</li>
+          <li>Arazi koruma — kimse evini bozamaz</li>
+          <li>Boss'lar, görevler, ödül sandıkları</li>
+        </ul>
+      </article>
+
+      <article class="slot dim">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"/><path d="M3 17h18v3H3z"/><path d="M7 10V7h6v3"/>
+          </svg>
+        </div>
+        <span class="status st-wait"><span class="dot"></span>Hazırlanıyor</span>
+        <h3>BedWars</h3>
+        <p>Takım savaşı. Yatağını koru, rakiplerinkini kır. Harita hazır, ayarları yapılıyor.</p>
+        <ul>
+          <li>4 takım, ada ada arena</li>
+          <li>Jeneratörler ve takım mağazası</li>
+        </ul>
+      </article>
+
+      <article class="slot dim">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7c8da3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10"/><path d="M9 13h6"/><path d="M10 17h4"/>
+          </svg>
+        </div>
+        <span class="status st-soon"><span class="dot"></span>Yakında</span>
+        <h3>Forge</h3>
+        <p>Ağır modlu sunucu — makineler, teknoloji, otomasyon. Üzerinde çalışıyoruz.</p>
+        <ul>
+          <li>Modpack seçimi yapılıyor</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sechead">
+      <span class="k">Nasıl girilir</span>
+      <h2>İlk girişte iki adım</h2>
+      <p>Sunucuya eklendikten sonra bir kez şifre belirliyorsun. Hesabın orijinal olmak zorunda değil,
+        ama şifreni unutma — hesabın ona bağlı.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Platform seçimi">
+      <button class="tab" role="tab" id="t-java" aria-controls="p-java" aria-selected="true" type="button">Bilgisayar (Java)</button>
+      <button class="tab" role="tab" id="t-be" aria-controls="p-be" aria-selected="false" type="button">Telefon / Konsol (Bedrock)</button>
+    </div>
+
+    <div class="panel" id="p-java" role="tabpanel" aria-labelledby="t-java">
+      <ol class="steps">
+        <li><strong>Çok Oyunculu → Sunucu Ekle</strong>
+          <span>Sunucu adresine <code class="inline">84.51.35.247</code> yaz. Port yazmana gerek yok.</span></li>
+        <li><strong>Sunucuya katıl</strong>
+          <span>1.13 ile 26.2 arası her sürüm çalışır. Sürümünü değiştirmene gerek yok.</span></li>
+        <li><strong>Şifreni belirle</strong>
+          <span>İlk girişte <code class="inline">/register şifren şifren</code> yaz — aynı şifreyi iki kez.
+            En az 6 karakter olmalı.</span></li>
+        <li><strong>Sonraki girişler</strong>
+          <span><code class="inline">/login şifren</code> yazman yeterli. Sonra menüden Survival'ı seç.</span></li>
+      </ol>
+    </div>
+
+    <div class="panel" id="p-be" role="tabpanel" aria-labelledby="t-be" hidden>
+      <ol class="steps">
+        <li><strong>Oyna → Sunucular → Sunucu Ekle</strong>
+          <span>Adres <code class="inline">84.51.35.247</code>, port <code class="inline">19132</code>.
+            Bedrock'ta portu elle girmen gerekiyor.</span></li>
+        <li><strong>Sunucuya katıl</strong>
+          <span>Telefon, tablet, Windows 10/11 sürümü ve konsollar çalışır.</span></li>
+        <li><strong>Şifreni belirle</strong>
+          <span>İlk girişte <code class="inline">/register şifren şifren</code>. Sohbet tuşundan komut yazabilirsin.</span></li>
+        <li><strong>Adının başındaki nokta</strong>
+          <span>Bedrock oyuncularının adı <code class="inline">.OyuncuAdi</code> şeklinde görünür — bu normal,
+            Java oyuncularından ayırt etmek için.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="neler-var">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="k">Survival</span>
+      <h2>Neler var</h2>
+      <p>Boş bir survival değil — oynadıkça kazandığın, harcayabildiğin bir düzen kurduk.</p>
+    </div>
+    <div class="feats">
+      <div class="feat"><h4>Meslekler</h4>
+        <p>Madenci, çiftçi, avcı, inşaatçı… 12 meslek var. Aynı anda 3 tanesini seçebilir,
+          oynayarak para kazanırsın.</p></div>
+      <div class="feat"><h4>Ekonomi</h4>
+        <p>₺ ile alışveriş. Başlangıçta 250₺ veriliyor. Dükkandan al, açık artırmaya koy,
+          arkadaşına para gönder.</p></div>
+      <div class="feat"><h4>Kendi dükkanın</h4>
+        <p>Sandığın üstüne tabela asıp kendi dükkanını kurabilirsin. Sen yokken bile satış yapar.</p></div>
+      <div class="feat"><h4>Arazi koruma</h4>
+        <p>Altın kürekle alanını seç, kilitle. Kimse evini bozamaz, sandığını açamaz.</p></div>
+      <div class="feat"><h4>Beceriler</h4>
+        <p>Madencilik, dövüş, çiftçilik gibi becerilerin oynadıkça gelişir, yeni yetenekler açılır.</p></div>
+      <div class="feat"><h4>Boss ve görevler</h4>
+        <p>Özel canavarlar, zindanlar ve görev zincirleri. Bitirdikçe ödül ve ganimet.</p></div>
+      <div class="feat"><h4>Ödül sandıkları</h4>
+        <p>Anahtar topla, sandık aç. İçinden nadir eşyalar ve para çıkar.</p></div>
+      <div class="feat"><h4>Pratik detaylar</h4>
+        <p>Ağacı tek vuruşta kes, merdivene otur, tabelayla asansör kur. Küçük ama hayat kurtaran şeyler.</p></div>
+      <div class="feat"><h4>Hile koruması</h4>
+        <p>Anticheat açık, yapılan değişiklikler kayıtlı. Biri bir şeyi bozarsa geri alınabiliyor.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="komutlar">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="k">Komutlar</span>
+      <h2>Bilmen gereken komutlar</h2>
+      <p>Hepsi Türkçe. İngilizcelerini ezberlemene gerek yok.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Komut</th><th>Ne yapar</th></tr></thead>
+        <tbody>
+          <tr><td class="cmd">/register şifre şifre</td><td class="desc">İlk girişte hesabını oluşturur</td></tr>
+          <tr><td class="cmd">/login şifre</td><td class="desc">Sonraki girişlerde giriş yapar</td></tr>
+          <tr><td class="cmd">/kit baslangic</td><td class="desc">Başlangıç eşyalarını verir</td></tr>
+          <tr><td class="cmd">/meslekler</td><td class="desc">Meslek listesini açar</td></tr>
+          <tr><td class="cmd">/evkur</td><td class="desc">Bulunduğun yeri ev olarak işaretler</td></tr>
+          <tr><td class="cmd">/ev</td><td class="desc">Evine ışınlanır</td></tr>
+          <tr><td class="cmd">/dukkan</td><td class="desc">Alışveriş menüsünü açar</td></tr>
+          <tr><td class="cmd">/para</td><td class="desc">Bakiyeni gösterir</td></tr>
+          <tr><td class="cmd">/ode oyuncu miktar</td><td class="desc">Birine para gönderir</td></tr>
+          <tr><td class="cmd">/acikartirma</td><td class="desc">Açık artırmayı açar</td></tr>
+          <tr><td class="cmd">/beceriler</td><td class="desc">Beceri seviyelerini gösterir</td></tr>
+          <tr><td class="cmd">/isin oyuncu</td><td class="desc">Birinin yanına ışınlanma isteği yollar</td></tr>
+          <tr><td class="cmd">/kabul</td><td class="desc">Gelen ışınlanma isteğini kabul eder</td></tr>
+          <tr><td class="cmd">/menu</td><td class="desc">Sunucu seçim menüsünü açar</td></tr>
+          <tr><td class="cmd">/kurallar</td><td class="desc">Sunucu kurallarını gösterir</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="kurallar">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="k">Kurallar</span>
+      <h2>Uyman gerekenler</h2>
+      <p>Burası okul sunucusu. Kuralları çiğneyen önce uyarılır, tekrarında sunucudan atılır.</p>
+    </div>
+    <ol class="rules">
+      <li><span><strong>Saygılı ol.</strong> Hakaret, küfür ve aşağılama yasak.</span></li>
+      <li><span><strong>Başkasının emeğine dokunma.</strong> Yapısını bozma, eşyasını çalma.</span></li>
+      <li><span><strong>Hile kullanma.</strong> X-ray ve yasak modlar dahil. Anticheat açık.</span></li>
+      <li><span><strong>Reklam yapma.</strong> Başka sunucu tanıtma.</span></li>
+      <li><span><strong>Spam yapma.</strong> Büyük harfle bağırma, sohbeti doldurma.</span></li>
+      <li><span><strong>Arazini koru.</strong> Korumasız bıraktığın alan risk altındadır.</span></li>
+      <li><span><strong>Sorunu yetkiliye bildir.</strong> Kendin halletmeye çalışma.</span></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fbrand"><span class="cube" aria-hidden="true"></span> ATALMC — Adem Tolunay Anadolu Lisesi</div>
+    <div>Java 84.51.35.247 · Bedrock 19132 · Sürüm 1.13 – 26.2</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* tema */
+  var root=document.documentElement, btn=document.getElementById("themebtn");
+  function current(){
+    var s=root.getAttribute("data-theme");
+    if(s) return s;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  }
+  btn.addEventListener("click",function(){
+    var next=current()==="dark"?"light":"dark";
+    root.setAttribute("data-theme",next);
+    try{localStorage.setItem("atalmc-theme",next);}catch(e){}
+    draw();
+  });
+  try{
+    var saved=localStorage.getItem("atalmc-theme");
+    if(saved) root.setAttribute("data-theme",saved);
+  }catch(e){}
+
+  /* kopyala */
+  document.querySelectorAll(".copybtn").forEach(function(b){
+    b.addEventListener("click",function(){
+      var v=b.getAttribute("data-copy"), old=b.textContent;
+      function ok(){b.textContent="Kopyalandı";b.classList.add("done");
+        setTimeout(function(){b.textContent=old;b.classList.remove("done");},1600);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(v).then(ok,fallback);
+      } else fallback();
+      function fallback(){
+        var ta=document.createElement("textarea");ta.value=v;ta.setAttribute("readonly","");
+        ta.style.position="absolute";ta.style.left="-9999px";document.body.appendChild(ta);
+        ta.select();try{document.execCommand("copy");ok();}catch(e){}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* sekmeler */
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  tabs.forEach(function(t){
+    t.addEventListener("click",function(){
+      tabs.forEach(function(o){
+        var sel=o===t;
+        o.setAttribute("aria-selected",sel?"true":"false");
+        document.getElementById(o.getAttribute("aria-controls")).hidden=!sel;
+      });
+    });
+    t.addEventListener("keydown",function(e){
+      var i=tabs.indexOf(t);
+      if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+        e.preventDefault();
+        tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length].focus();
+      }
+    });
+  });
+
+  /* hero: ambient voxel siluet */
+  var cv=document.getElementById("voxel"), ctx=cv.getContext("2d");
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var cols=[], W=0,H=0,DPR=1, CELL=26, t0=Date.now();
+
+  function build(){
+    DPR=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth; H=cv.clientHeight;
+    cv.width=Math.floor(W*DPR); cv.height=Math.floor(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    var n=Math.ceil(W/CELL)+1; cols=[];
+    for(var i=0;i<n;i++){
+      cols.push({ base:1+Math.floor(Math.abs(Math.sin(i*0.7)*3+Math.sin(i*0.23)*2.4)),
+                  amp:1+(i%3), ph:i*0.55, sp:0.00035+(i%5)*0.00008 });
+    }
+  }
+  function draw(){
+    if(!W||!H) return;
+    var cs=getComputedStyle(root);
+    var accent=cs.getPropertyValue("--accent").trim()||"#38bdf8";
+    var accent2=cs.getPropertyValue("--accent-2").trim()||"#5eead4";
+    var dark=current()==="dark";
+    ctx.clearRect(0,0,W,H);
+    var now=Date.now()-t0;
+    for(var i=0;i<cols.length;i++){
+      var c=cols[i];
+      var h=c.base+(reduce?c.amp*0.5:(Math.sin(now*c.sp+c.ph)+1)/2*c.amp);
+      var blocks=Math.max(1,Math.round(h));
+      for(var b=0;b<blocks;b++){
+        var x=i*CELL, y=H-(b+1)*CELL;
+        if(y<-CELL) break;
+        var depth=b/Math.max(blocks,1);
+        ctx.fillStyle=(b===blocks-1)?accent2:accent;
+        ctx.globalAlpha=(dark?0.13:0.16)*(1-depth*0.55);
+        ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+        ctx.globalAlpha=(dark?0.30:0.26)*(1-depth*0.5);
+        ctx.strokeStyle=(b===blocks-1)?accent2:accent;
+        ctx.lineWidth=1;
+        ctx.strokeRect(x+1.5,y+1.5,CELL-3,CELL-3);
+      }
+    }
+    ctx.globalAlpha=1;
+  }
+  function loop(){ draw(); if(!reduce) requestAnimationFrame(loop); }
+
+  function init(){ build(); reduce?draw():loop(); }
+  window.addEventListener("resize",function(){ build(); if(reduce) draw(); });
+  if(document.readyState==="complete"||document.readyState==="interactive") init();
+  else document.addEventListener("DOMContentLoaded",init);
+})();
+</script>
+
+</body>
+</html>
